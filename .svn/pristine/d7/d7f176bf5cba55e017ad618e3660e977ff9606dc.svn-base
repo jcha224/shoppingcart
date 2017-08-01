@@ -1,0 +1,67 @@
+/*
+ * TCSS 305 - SPRING 2016
+ * Assignment 2 - Shopping Cart
+ */
+
+package model;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Objects;
+
+/**
+ * Represents a Shopping Cart.
+ * 
+ * @author John
+ * @version 15 April 2016
+ */
+public class ShoppingCart {
+    
+    /** A list of items in a shopping cart */
+    private final HashMap<Item, BigDecimal> myCart;
+    
+    /** Whether or not there is a membership. */
+    private boolean myMembership;
+    
+    public ShoppingCart() {
+        myCart = new HashMap<>();
+    }
+
+
+    public void add(final ItemOrder theOrder) {
+        myCart.put(Objects.requireNonNull(theOrder).getItem(), 
+                   theOrder.calculateOrderTotal());
+    }
+
+
+    public void setMembership(final boolean theMembership) {
+        myMembership = theMembership;
+    }
+
+
+    public BigDecimal calculateTotal() {
+        final Iterator<Item> itr = myCart.keySet().iterator();
+        BigDecimal total = BigDecimal.ZERO;
+        while (itr.hasNext()) {
+            total = total.add(myCart.get(itr.next()));
+        }
+        return total.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+    }
+    
+    public void clear() {
+        myCart.clear();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder receipt = new StringBuilder();
+        final Iterator<Item> itr = myCart.keySet().iterator();
+        while (itr.hasNext()) {
+            receipt.append(itr.next().toString() + "\n");
+        }
+        receipt.append("Total: " + this.calculateTotal());
+        return receipt.toString();
+    }
+
+}

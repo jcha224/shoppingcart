@@ -1,0 +1,62 @@
+// Finish and comment me!
+
+package model;
+
+import java.math.BigDecimal;
+
+public final class Item {
+    private String myName;
+    private BigDecimal myPrice;
+    private BigDecimal myBulkQuantity;
+    private BigDecimal myBulkPrice;
+    
+    public Item(final String theName, final BigDecimal thePrice) {
+        myName = theName;
+        myPrice = thePrice;
+    }
+
+
+    public Item(final String theName, final BigDecimal thePrice, final int theBulkQuantity,
+                final BigDecimal theBulkPrice) {
+        myName = theName;
+        myPrice = thePrice;
+        myBulkQuantity = new BigDecimal(theBulkQuantity);
+        myBulkPrice = theBulkPrice;
+    }
+
+
+    public BigDecimal calculateItemTotal(final int theQuantity) {
+        BigDecimal quantity = new BigDecimal(theQuantity);
+        BigDecimal[] bulk = quantity.divideAndRemainder(myBulkQuantity);
+        BigDecimal result = bulk[0].multiply(myBulkPrice);
+        result = result.multiply(myBulkQuantity);
+        result = result.add(bulk[1].multiply(myPrice));
+        return result;
+    }
+    
+    public boolean isBulk() {
+        
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        
+        return null;
+    }
+
+
+    @Override
+    public boolean equals(final Object theOther) {
+        
+        return false;
+    }
+
+
+    @Override
+    public int hashCode() {
+        
+        return 0;
+    }
+
+}

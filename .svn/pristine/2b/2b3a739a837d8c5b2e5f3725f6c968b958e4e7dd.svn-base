@@ -1,0 +1,81 @@
+/**
+ * TCSS 305 - SPRING 2016
+ * Assignment 2 - Shopping Cart
+ */
+
+package model;
+
+import static org.junit.Assert.*;
+
+import java.math.BigDecimal;
+
+import org.junit.Before;
+import org.junit.Test;
+
+/**
+ * Unit test for Item class.
+ * 
+ * @author John
+ * @version 15 April 2016
+ */
+public class TestItem {
+
+    /** A tolerance for comparing doubles. */
+    private static final double TOLERANCE = .000001;
+    
+    /** The Item object that will be tested. */
+    private Item myItem1;
+    
+    /** Second Item object that will be tested. */
+    private Item myItem2;
+    
+    /**
+     * This method prepares the Item object before every test.
+     */
+    @Before
+    public void prepItem() {
+        final BigDecimal price = new BigDecimal("0.5");
+        final BigDecimal price2 = new BigDecimal("1.0");
+        final int bulkQuantity = 5;
+        final BigDecimal bulkPrice = new BigDecimal("0.2");
+        myItem1 = new Item("pen", price);
+        myItem2 = new Item("paper", price2, bulkQuantity, bulkPrice);
+    }
+    
+    /**
+     * Test method for {@link Item#Item(String, BigDecimal)}.
+     */
+    @Test
+    public void testItem() {
+        final BigDecimal testNum = new BigDecimal("2.00");
+        final Item test = new Item("pencil", testNum);
+        final String actual = "pencil, $" + testNum.toString();
+        
+        assertEquals("constructor did not work", actual,
+                     test.toString());
+    }
+    
+    /**
+     * Test method for {@link Item#calculateItemTotal(integer)}.
+     */
+    @Test
+    public void testCalculateItemTotal() {
+        final int test = 2;
+        final double actual =  test * 0.5;
+        assertEquals("calculateItemTotal failed to get total!", actual,
+                     myItem1.calculateItemTotal(test).doubleValue(), TOLERANCE);
+    }
+    
+    /**
+     * Test method for {@link Item#calculateItemTotal(integer)}.
+     */
+    @Test
+    public void testBulkCalculateItemTotal() {
+        final int test = 6;
+        final double actual =  5 * 0.2 + 0.5;
+        assertEquals("calculateItemTotal failed to get bulk total!", actual,
+                     myItem2.calculateItemTotal(test).doubleValue(), TOLERANCE);
+    }
+    
+    
+}

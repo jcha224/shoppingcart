@@ -1,0 +1,158 @@
+/**
+ * TCSS 305 - SPRING 2016
+ * Assignment 2 - Shopping Cart
+ */
+
+package model;
+
+import java.math.BigDecimal;
+import java.util.Objects;
+
+/**
+ * Represents Item object.
+ * 
+ * @author John
+ * @version 15 April 2016
+ */
+
+public final class Item {
+    
+    /** The name of item. */
+    private String myName;
+    
+    /** The price of item. */
+    private BigDecimal myPrice;
+    
+    /** The number of items necessary to receive bulk price. */
+    private BigDecimal myBulkQuantity;
+    
+    /** The bulk price of item. */
+    private BigDecimal myBulkPrice;
+    
+    /**
+     * Constructs an item with a specific name and price.
+     * 
+     * @param theName the name of the item
+     * @param thePrice the price of the item
+     * @throws IllegalArgumentException if the price is less than 0
+     * @throws NullPointerException if the name is null
+     */
+    public Item(final String theName, final BigDecimal thePrice) { 
+        if (thePrice.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException();
+        }
+        if (theName == null) {
+            throw new NullPointerException();
+        }
+        myName = theName;
+        myPrice = thePrice;
+        myBulkQuantity = BigDecimal.ZERO;
+        myBulkPrice = BigDecimal.ZERO;
+    }
+
+    /**
+     * Constructs an item with specific name, price, bulk price, 
+     * and bulk quantity.
+     * 
+     * @param theName
+     * @param thePrice
+     * @param theBulkQuantity
+     * @param theBulkPrice
+     * @throw IllegalArgumentException if price is less than 0
+     * @throw IllegalArgumentException if bulk price is less than 0
+     * @throw IllegalArgumentException if bulk quantity is less than 0
+     * @throw NullPointerException if name is null
+     */
+    public Item(final String theName, final BigDecimal thePrice, 
+                final int theBulkQuantity, 
+                final BigDecimal theBulkPrice) {
+        if (thePrice.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException();
+        }
+        if (theName == null) {
+            throw new NullPointerException();
+        }
+        if (theBulkQuantity <= 0) {
+            throw new IllegalArgumentException();
+        }
+        if (thePrice.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException();
+        }
+        myName = theName;
+        myPrice = thePrice;
+        myBulkQuantity = BigDecimal.valueOf(theBulkQuantity);
+        myBulkPrice = theBulkPrice;
+    }
+
+    /**
+     * Calculates the total cost of item after bulk prices when 
+     * applicable.
+     * 
+     * @param theQuantity the quantity of an item
+     * @return total cost of item(s)
+     */
+    public BigDecimal calculateItemTotal(final int theQuantity) {
+        final BigDecimal quantity = BigDecimal.valueOf(theQuantity);
+        final BigDecimal[] bulk = quantity.divideAndRemainder(
+                                                    myBulkQuantity);
+        BigDecimal result = bulk[0].multiply(myBulkPrice);
+        result = result.multiply(myBulkQuantity);
+        result = result.add(bulk[1].multiply(myPrice));
+        return result;
+    }
+    
+    /**
+     * Checks whether an item has bulk prices.
+     * 
+     * @return boolean of whether a item has bulk
+     */
+    public boolean isBulk() {
+        boolean result = false;
+        if (this.myBulkPrice != null) {
+            result = true;
+        }
+        return result;
+    }
+
+    /**
+     * String representation of Item is 
+     */
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder(myName 
+                                  + ", $" + myPrice.toString());
+        if (this.isBulk()) {
+            result.append(" ("
+                          + myBulkQuantity.toString() + " for $"
+                          + myBulkPrice.toString() + ")");
+        }
+        return result.toString();
+    }
+
+    @Override
+    public boolean equals(final Object theOther) {
+        boolean result = false;
+        if (theOther == null) {
+            result = false;
+        }
+        final Item other = (Item) Objects.requireNonNull(theOther);
+        if (!this.myName.equals(other.myName) 
+                        || !this.myPrice.equals(other.myPrice)) {
+            result = false;
+        }
+        if (!this.myBulkQuantity.equals(other.myBulkQuantity)
+                        || !this.myBulkPrice.equals(other.myBulkPrice)) {
+            result = false;
+        }
+        return result;
+         
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.myName, this.myPrice, 
+                            this.myBulkQuantity, this.myBulkPrice);
+    }
+
+}

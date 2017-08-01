@@ -1,0 +1,85 @@
+// Finish and comment me!
+
+package model;
+
+import java.math.BigDecimal;
+import java.util.Objects;
+
+public final class Item {
+    private String myName;
+    private BigDecimal myPrice;
+    private BigDecimal myBulkQuantity;
+    private BigDecimal myBulkPrice;
+    
+    public Item(final String theName, final BigDecimal thePrice) { 
+        myName = theName;
+        myPrice = thePrice;
+        myBulkQuantity = BigDecimal.ZERO;
+        myBulkPrice = BigDecimal.ZERO;
+    }
+
+
+    public Item(final String theName, final BigDecimal thePrice, final int theBulkQuantity,
+                final BigDecimal theBulkPrice) {
+        myName = theName;
+        myPrice = thePrice;
+        myBulkQuantity = BigDecimal.valueOf(theBulkQuantity);
+        myBulkPrice = theBulkPrice;
+    }
+
+
+    public BigDecimal calculateItemTotal(final int theQuantity) {
+        final BigDecimal quantity = BigDecimal.valueOf(theQuantity);
+        final BigDecimal[] bulk = quantity.divideAndRemainder(myBulkQuantity);
+        BigDecimal result = bulk[0].multiply(myBulkPrice);
+        result = result.multiply(myBulkQuantity);
+        result = result.add(bulk[1].multiply(myPrice));
+        return result;
+    }
+    
+    public boolean isBulk() {
+        boolean result = false;
+        if (this.myBulkPrice != null) {
+            result = true;
+        }
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        String result = myName + ", $" + myPrice;
+        if (this.isBulk()) {
+            result = result + " ("
+                          + myBulkQuantity + " for $"
+                          + myBulkPrice + ")";
+        }
+        return result;
+    }
+
+    @Override
+    public boolean equals(final Object theOther) {
+        boolean result = false;
+        if (theOther == null) {
+            result = false;
+        }
+        final Item other = (Item) Objects.requireNonNull(theOther);
+        if (!this.myName.equals(other.myName) 
+                        || !this.myPrice.equals(other.myPrice)) {
+            result = false;
+        }
+        if (!this.myBulkQuantity.equals(other.myBulkQuantity)
+                        || !this.myBulkPrice.equals(other.myBulkPrice)) {
+            result = false;
+        }
+        return result;
+         
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.myName, this.myPrice, this.myBulkQuantity, 
+                            this.myBulkPrice);
+    }
+
+}
